@@ -1,9 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Button, TextInput, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
-import MapView, { Polylinen ,Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
+LocaleConfig.locales['fr'] = {
+  monthNames: [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
+  ],
+  monthNames: [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre'
+  ],
+  monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
+  dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+  dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
+  today: "Aujourd'hui"
+};
+
+LocaleConfig.defaultLocale = 'fr';
 
 const AddCourseScreen = () => {
   const [coordinates, setCoordinates] = useState([]);
@@ -12,8 +47,10 @@ const AddCourseScreen = () => {
   const [count, setCount] = useState ('');
   const [distance, setDistance] = useState ('');
   const [types, setTypes] = useState ([{name:'Green', isSelected : false}, {name:'Luxe', isSelected : false}, {name:'Vans', isSelected : false}]);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState('13-03-2023');
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
+  
 
   const handleSelectType = (type, state) => {
     const newTypes = types.map((e) => {
@@ -26,7 +63,7 @@ const AddCourseScreen = () => {
     });
     setTypes(newTypes);
   };
-console.log('types :', types);
+
 
   const handleGetDirections = async () => {
     try {
@@ -51,6 +88,8 @@ console.log('types :', types);
               <Text style={styles.typeText}>{e.name}</Text>
             </TouchableOpacity>
   })
+
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -63,7 +102,7 @@ console.log('types :', types);
                 fetchDetails={true}
                 styles={{
                   textInputContainer: {
-                    backgroundColor: '#FDD97D',
+                    backgroundColor: '#b8cced',
                     width:330,
                     height: 45,
                     borderRadius: 10,
@@ -72,13 +111,13 @@ console.log('types :', types);
                     color: '#5d5d5d',
                     fontSize: 16,
                     width: 330,
-                    backgroundColor: '#FDD97D',
+                    backgroundColor: '#b8cced',
                     borderRadius: 10,
                     paddingLeft: 10,
                     paddingRight: 10,
                   },
                   predefinedPlacesDescription: {
-                    color: '#1faadb',
+                    color: '#8faee0',
                   },
                   listView: {
                     position: 'absolute',
@@ -101,7 +140,7 @@ console.log('types :', types);
               <GooglePlacesAutocomplete
                 styles={{
                   textInputContainer: {
-                    backgroundColor: '#FDD97D',
+                    backgroundColor: '#b8cced',
                     width:330,
                     height: 45,
                     borderRadius: 10,
@@ -113,7 +152,7 @@ console.log('types :', types);
                     borderRadius: 10,
                     paddingLeft: 10,
                     paddingRight: 10,
-                    backgroundColor: '#FDD97D',
+                    backgroundColor: '#b8cced',
                   },
                   predefinedPlacesDescription: {
                     color: '#1faadb',
@@ -139,16 +178,50 @@ console.log('types :', types);
             <View style={styles.gammeContent}>
               {typesToDisplay}
             </View>
-          
-           <View style={styles.dateContent}>
-                    <TouchableOpacity style={styles.dateButton} onPress={() => handleGetDirections}>
-                      <Text style={styles.dateText}>13/04/24</Text>
+          {!isCalendarVisible && <View style={styles.dateContent}>
+                    <TouchableOpacity style={styles.dateButton} onPress={() => setIsCalendarVisible(true)}>
+                      <Text style={styles.dateText}>{date}</Text>
                     </TouchableOpacity>
                     <Text style={styles.text}>à</Text>
                     <TouchableOpacity style={styles.hourButton} onPress={() => handleGetDirections}>
                       <Text style={styles.hourText}>14 : 30</Text>
                     </TouchableOpacity>
-           </View>
+           </View>}
+           
+            {isCalendarVisible &&  <Calendar
+             // Customize the appearance of the calendar
+                    style={{
+                      borderWidth: 1,
+                      borderColor: '#6aa1fc',
+                      maxHeight: 450,
+                      width: 300,
+                      backgroundColor: '#6aa1fc',
+                      marginTop: 20,
+                    }}
+                    
+                    onDayPress={day => {
+                    console.log('day :', typeof(day.year))
+
+                    const newDay = `${(day.day.toString().length)>1?day.day.toString():'0'+day.day.toString()}-${(day.month.toString().length)>1?day.month.toString():'0'+day.month.toString()}-${day.year.toString().slice(2,4)}`;
+                    setDate(newDay);
+                    setIsCalendarVisible(false)
+                  }}
+                  markedDates={{
+                    date: {selected: true, marked: true, selectedColor: '#fec101'},
+                  }}
+                  theme={{
+                    arrowColor: 'white',
+                    backgroundColor: '#6aa1fc',
+                    calendarBackground: '#b8cced',
+                    textSectionTitleColor: 'black',
+                    selectedDayBackgroundColor: 'white',
+                    selectedDayTextColor: 'white',
+                    todayTextColor: 'white',
+                    dayTextColor: 'black',
+                    textDisabledColor: '#b8cced',
+                  }}
+                  hideExtraDays={true}
+                />}
             {origin && destination && 
                   <View> 
                     <TouchableOpacity style={styles.resultButton} onPress={() => handleGetDirections}>
@@ -167,7 +240,7 @@ console.log('types :', types);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#071427',
+    backgroundColor: '#020818',
     marginTop: 30,
     padding: 10,
 
@@ -182,7 +255,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     marginTop: 30,
-    color: '#fec101',
+    color: '#6aa1fc',
 
   },
   firstInputContainer: {
@@ -207,7 +280,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection:'row',
     justifyContent: 'space-between',
-    marginTop: 40,
+    marginTop: 20,
   },
   typeButton: {
     width: 100,
@@ -216,7 +289,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fec101',
+    backgroundColor: '#6aa1fc',
   },
   typeText : {
     textAlign: 'center',
@@ -231,17 +304,17 @@ const styles = StyleSheet.create({
   dateText:{
     fontSize: 25,
     fontWeight: 'bold',
-    color: '#fec101',
+    color: '#6aa1fc',
     },
   text:{
     fontSize: 25,
     fontWeight: 'bold',
-    color: '#fec101',
+    color: '#6aa1fc',
   },
   hourText:{
     fontSize: 25,
     fontWeight: 'bold',
-    color: '#fec101',
+    color: '#6aa1fc',
   }
 });
 
