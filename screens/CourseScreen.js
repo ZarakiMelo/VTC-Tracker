@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         borderColor: 'red',
         
         backgroundColor: '#071427',
-        marginTop: 30,
+        marginTop: 25,
         
     },
     text :{
