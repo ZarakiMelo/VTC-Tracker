@@ -1,6 +1,9 @@
-import { TouchableOpacity, View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, SafeAreaView, Dimensions } from "react-native";
+
+
 
 const CourseScreen = () => {
+    
     return(
         <SafeAreaView style={styles.container}>
             
@@ -12,15 +15,17 @@ const CourseScreen = () => {
 
 const styles = StyleSheet.create({
     container:{
-        flex:1,
+        width:'100%',
+        height: '100%',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'red',
-        padding: 10,
+        
         backgroundColor: '#071427',
         marginTop: 30,
+        
     },
     text :{
         fontSize: 40,

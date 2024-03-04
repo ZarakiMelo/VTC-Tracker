@@ -2,6 +2,7 @@ import AddCourseScreen from "./screens/AddCourseScreen";
 import HomeScreen from "./screens/HomeScreen";
 import DispatchScreen from "./screens/DispatchScreen";
 import CourseScreen from "./screens/CourseScreen";
+import { View, Dimensions} from "react-native";
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -10,14 +11,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-
+const { width, height } = Dimensions.get("window")
 const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return(
-    <Tab.Navigator screenOptions={({ route }) => ({
+    <View style={{width:'100%', height:'100%'}}>
+      <Tab.Navigator screenOptions={({ route }) => ({
       tabBarIcon: ({ color, size }) => {
         let iconName = '';
  
@@ -35,7 +37,8 @@ const TabNavigator = () => {
       tabBarInactiveTintColor: '#071427',
       headerShown: false,
       tabBarShowLabel: false,
-      tabBarStyle: {height:60, display:'flex', justifyContent: 'center'}
+      tabBarStyle: {height:50, display:'flex', justifyContent: 'center'},
+      tabBarHideOnKeyboard: true,
 
     })}
   >
@@ -43,6 +46,8 @@ const TabNavigator = () => {
       <Tab.Screen name='AddCourse' component={AddCourseScreen}/>
       <Tab.Screen name='Dispatch' component={DispatchScreen}/>
     </Tab.Navigator>
+    </View>
+    
   )
 }
 

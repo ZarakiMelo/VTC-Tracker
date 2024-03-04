@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Button, TextInput, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Button, TextInput, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
 import MapView, { Polylinen ,Marker } from 'react-native-maps';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { WebView } from 'react-native-webview';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 
 const AddCourseScreen = () => {
@@ -12,6 +12,7 @@ const AddCourseScreen = () => {
   const [count, setCount] = useState ('');
   const [distance, setDistance] = useState ('');
   const [types, setTypes] = useState ([{name:'Green', isSelected : false}, {name:'Luxe', isSelected : false}, {name:'Vans', isSelected : false}]);
+  const [date, setDate] = useState('');
 
 
   const handleSelectType = (type, state) => {
@@ -46,147 +47,158 @@ console.log('types :', types);
 
 
   const typesToDisplay = types.map((e)=>{
-    return  <TouchableOpacity style={styles.button} onPress={() => handleSelectType(e.name, e.isSelected)}>
-              <Text style={styles.buttonText}>{e.name}</Text>
+    return  <TouchableOpacity style={styles.typeButton} onPress={() => handleSelectType(e.name, e.isSelected)}>
+              <Text style={styles.typeText}>{e.name}</Text>
             </TouchableOpacity>
   })
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>VTC Tracker</Text>
-        <View style={styles.firstInputContainer}>
-          <GooglePlacesAutocomplete
-            minLength={3}
-            fetchDetails={true}
-            styles={{
-              textInputContainer: {
-                backgroundColor: 'white',
-                width:330,
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: 'red',
-              },
-              textInput: {
-                color: '#5d5d5d',
-                fontSize: 16,
-                width: 330,
-                borderWidth: 1,
-                borderRadius: 10,
-                paddingLeft: 10,
-                paddingRight: 10,
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-              listView: {
-                position: 'absolute',
-                top: 50, 
-                width:'100%',
-                maxHeight:150, 
-              },
-            }}
-            placeholder='Départ'
-            onPress={(data, details = null) => {
-              setOrigin(data.place_id);
-            }}
-            query={{
-              key: 'AIzaSyCsdvOMtB6QvfVmAUxEYqRVPvtUr_szPy4',
-              language: 'fr', 
-            }}
-          />
-        </View>
-        <View style={styles.secondInputContainer}>
-          <GooglePlacesAutocomplete
-            styles={{
-              textInputContainer: {
-                backgroundColor: 'white',
-                width:330,
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: 'red',
-              },
-              textInput: {
-                color: '#5d5d5d',
-                fontSize: 16,
-                width: 330,
-                borderWidth: 1,
-                borderRadius: 10,
-                paddingLeft: 10,
-                paddingRight: 10,
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-              listView: {
-                position: 'absolute',
-                top: 50,
-                width:'100%',
-                maxHeight: 150,
-                
-              },
-            }}
-            placeholder='Arrivée'
-            onPress={(data) => {
-              setDestination(data.place_id);
-            }}
-            query={{
-              key: 'AIzaSyCsdvOMtB6QvfVmAUxEYqRVPvtUr_szPy4',
-              language: 'fr',
-            }}
-          />
-        </View>
-         <View style={styles.gammeContent}>
-           {typesToDisplay}
-        </View>
-       
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+          <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="never">
+            <Text style={styles.title}>Nouvelle course</Text>
             
-        {origin && destination && 
-               <View> 
-                <TouchableOpacity style={styles.resultButton} onPress={() => handleGetDirections}>
-                  <Text style={styles.buttonText}>Calculer le montant de la course</Text>
-                </TouchableOpacity>
-                <Text style={styles.buttonText}>53 euros</Text>
-              </View>
-            }
-       
-      
-       
-      
+            <View style={styles.firstInputContainer}>
+              <GooglePlacesAutocomplete
+                minLength={3}
+                fetchDetails={true}
+                styles={{
+                  textInputContainer: {
+                    backgroundColor: '#FDD97D',
+                    width:330,
+                    height: 45,
+                    borderRadius: 10,
+                  },
+                  textInput: {
+                    color: '#5d5d5d',
+                    fontSize: 16,
+                    width: 330,
+                    backgroundColor: '#FDD97D',
+                    borderRadius: 10,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                  },
+                  predefinedPlacesDescription: {
+                    color: '#1faadb',
+                  },
+                  listView: {
+                    position: 'absolute',
+                    top: 40, 
+                    width:'97%',
+                    maxHeight:137, 
+                  },
+                }}
+                placeholder='Départ'
+                onPress={(data, details = null) => {
+                  setOrigin(data.place_id);
+                }}
+                query={{
+                  key: 'AIzaSyCsdvOMtB6QvfVmAUxEYqRVPvtUr_szPy4',
+                  language: 'fr', 
+                }}
+              />
+            </View>
+            <View style={styles.secondInputContainer}>
+              <GooglePlacesAutocomplete
+                styles={{
+                  textInputContainer: {
+                    backgroundColor: '#FDD97D',
+                    width:330,
+                    height: 45,
+                    borderRadius: 10,
+                  },
+                  textInput: {
+                    color: '#5d5d5d',
+                    fontSize: 16,
+                    width: 330,
+                    borderRadius: 10,
+                    paddingLeft: 10,
+                    paddingRight: 10,
+                    backgroundColor: '#FDD97D',
+                  },
+                  predefinedPlacesDescription: {
+                    color: '#1faadb',
+                  },
+                  listView: {
+                    position: 'absolute',
+                    top: 40,
+                    width:'97%',
+                    maxHeight: 137,
+                    
+                  },
+                }}
+                placeholder='Arrivée'
+                onPress={(data) => {
+                  setDestination(data.place_id);
+                }}
+                query={{
+                  key: 'AIzaSyCsdvOMtB6QvfVmAUxEYqRVPvtUr_szPy4',
+                  language: 'fr',
+                }}
+              />
+            </View>
+            <View style={styles.gammeContent}>
+              {typesToDisplay}
+            </View>
+          
+           <View style={styles.dateContent}>
+                    <TouchableOpacity style={styles.dateButton} onPress={() => handleGetDirections}>
+                      <Text style={styles.dateText}>13/04/24</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.text}>à</Text>
+                    <TouchableOpacity style={styles.hourButton} onPress={() => handleGetDirections}>
+                      <Text style={styles.hourText}>14 : 30</Text>
+                    </TouchableOpacity>
+           </View>
+            {origin && destination && 
+                  <View> 
+                    <TouchableOpacity style={styles.resultButton} onPress={() => handleGetDirections}>
+                      <Text style={styles.buttonText}>Calculer le montant de la course</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.buttonText}>53 euros</Text>
+                  </View>
+                }
+          </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
+   
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    padding : 10,
     backgroundColor: '#071427',
     marginTop: 30,
+    padding: 10,
+
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 0, // Ajustez selon vos besoins
   },
   title: {
     fontSize: 40,
     fontWeight: 'bold',
-    marginTop: 50,
+    marginTop: 30,
     color: '#fec101',
-    borderWidth: 1,
-    borderColor: 'green',
+
   },
   firstInputContainer: {
     height: 50,
     width:'100%',
     display:'flex',
-    marginTop: 40,
-    borderWidth: 1,
-    borderColor: 'red',
+    alignItems: 'center',
+    marginTop: 30,
     zIndex: 2,
   },
   secondInputContainer: {
     height: 50,
     width:'100%',
     display:'flex',
+    alignItems: 'center',
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: 'red',
     zIndex: 1,
   },
 
@@ -195,36 +207,41 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection:'row',
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: 'blue',
     marginTop: 40,
   },
-  button: {
-    width: 80,
+  typeButton: {
+    width: 100,
     height: 50,
-    borderWidth: 1,
-    borderColor: 'blue',
+    borderRadius: 10,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fec101',
   },
-  mapContent :{
-      height: 250,
-      width: 330,
-      marginTop: 20,
-  },
-  resultButton: {
-    width: '50%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: 'blue',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText : {
+  typeText : {
     textAlign: 'center',
+  },
+  dateContent:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    marginTop: 30,
+  },
+  dateText:{
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#fec101',
+    },
+  text:{
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#fec101',
+  },
+  hourText:{
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#fec101',
   }
 });
 
